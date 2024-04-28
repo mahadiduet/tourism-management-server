@@ -40,7 +40,7 @@ async function run() {
       // View Tourism spot
       app.get('/tourism-sport', async (req, res) => {
          
-         const data = await tourismCollection.find().toArray();
+         const data = await tourismCollection.find().sort({ _id: -1 }).limit(6).toArray();
          // const data = cursor.toArray();
          res.send(data);
       })
