@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
 })
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = "mongodb+srv://mahadiduet:m9DxQxeQNdnHXlGo@cluster0.lyuai16.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -39,11 +39,35 @@ async function run() {
 
       // View Tourism spot
       app.get('/tourism-sport', async (req, res) => {
-         
+
          const data = await tourismCollection.find().sort({ _id: -1 }).limit(6).toArray();
          // const data = cursor.toArray();
          res.send(data);
       })
+
+      // All tourism spot
+      app.get('/all-tourism-sport', async (req, res) => {
+
+         const data = await tourismCollection.find().sort({ _id: -1 }).toArray();
+         // const data = cursor.toArray();
+         res.send(data);
+      })
+
+      // My Added spot 
+      app.get('/my-tourism-sport', async (req, res) => {
+         const email = req.query.email;
+         const data = await tourismCollection.find({ 'user_email': email }).sort({ _id: -1 }).toArray();
+         res.send(data);
+      })
+
+      // Delete tourism
+      app.delete('/my-tourism-sport/:id', async (req, res) => {
+         const tourism_id = new ObjectId(req.params.id);
+         // console.log(tourism_id);
+         const query = {_id: tourism_id};
+         const result = await tourismCollection.deleteOne(query);
+         res.send(result);
+      });
 
       // Add tourism spot
       app.post('/add-tourism-sport', async (req, res) => {
