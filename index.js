@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const uri = "mongodb+srv://mahadiduet:m9DxQxeQNdnHXlGo@cluster0.lyuai16.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = "mongodb+srv://mahadiduet:EJMEfxwMN9szBmNF@cluster0.lyuai16.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -60,6 +60,24 @@ async function run() {
          res.send(data);
       })
 
+      // View details spot 
+      app.get('/view-details', async (req, res) => {
+         const id = new ObjectId(req.query.id);
+         console.log(id);
+         const data = await tourismCollection.find({ '_id': id }).toArray();
+         console.log(data)
+         res.send(data);
+      })
+
+      // Update Spot 
+      app.get('/update', async (req, res) => {
+         const id = new ObjectId(req.query.id);
+         console.log(id);
+         const data = await tourismCollection.find({ '_id': id }).toArray();
+         console.log(data)
+         res.send(data);
+      })
+
       // Delete tourism
       app.delete('/my-tourism-sport/:id', async (req, res) => {
          const tourism_id = new ObjectId(req.params.id);
@@ -78,7 +96,30 @@ async function run() {
          res.send(result);
       })
 
+      // Single tourism get
+      app.get('/all-tourism-sport/:id', async(req, res)=>{
+         const id = req.params.id;
+         const query = new ObjectId(id);
+         const result = await tourismCollection.findOne(query);
+         res.send(result);
+      })
 
+      // Update tourism spot
+      app.put('/update-tourism-spot/:id', async (req, res) => {
+         const id = req.params.id;
+         // console.log(id);
+         const filter = { _id: new ObjectId(id) };
+         const options = { upsert: true };
+         const updateData = {
+            $set: req.body
+          };
+         // const tourism = req.body;
+         // console.log(tourism);
+         const result = await tourismCollection.updateOne(filter, updateData, options);
+         // const result = await tourismCollection.insertOne(tourism);
+         console.log(`A document was inserted with the _id: ${result}`);
+         res.send(result);
+      })
 
 
       // Send a ping to confirm a successful connection
